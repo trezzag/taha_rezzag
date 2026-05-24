@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taha Rezzag — Propulsion Researcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #0a0a0c;
+  --bg-2: #0f0f12;
+  --bg-card: #111116;
+  --bg-card-hover: #16161c;
+  --accent: #e8743a;
+  --accent-2: #ff6a00;
+  --accent-dim: rgba(232,116,58,0.12);
+  --accent-border: rgba(232,116,58,0.28);
+  --text: #e8e6e0;
+  --text-muted: #7a7872;
+  --text-faint: #2e2c2a;
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(232,116,58,0.3);
+  --nav-h: 64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.7;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace;font-size:0.72em;letter-spacing:0.08em}
+.accent{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;z-index:100;background:rgba(10,10,12,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:border-color 0.3s}
+.nav.scrolled{border-bottom-color:var(--border-accent)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:0.95rem;letter-spacing:0.18em;color:var(--accent);font-weight:500;text-decoration:none;cursor:pointer}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-link{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;color:var(--text-muted);text-decoration:none;text-transform:uppercase;transition:color 0.2s;position:relative;cursor:pointer}
+.nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s}
+.nav-link:hover,.nav-link--active{color:var(--text)}
+.nav-link:hover::after,.nav-link--active::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-toggle span{display:block;width:22px;height:1.5px;background:var(--text-muted);transition:all 0.3s}
+
+/* PAGES */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding-top:var(--nav-h);overflow:hidden}
+canvas#heroCanvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 2rem}
+.hero-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;color:var(--text-muted);opacity:0;animation:fadeUp 0.8s 0.2s forwards}
+.hero-divider{display:inline-block;width:40px;height:1px;background:var(--accent);opacity:0.5}
+.hero-name{font-size:clamp(4rem,10vw,9rem);font-weight:300;line-height:0.95;letter-spacing:-0.02em;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.9s 0.4s forwards}
+.hero-name em{font-style:italic;color:var(--accent);font-weight:300}
+.hero-tagline{font-size:clamp(1.1rem,2vw,1.4rem);color:var(--text-muted);line-height:1.6;margin-bottom:3rem;font-weight:300;opacity:0;animation:fadeUp 0.9s 0.6s forwards}
+.hero-tagline .accent{font-style:italic;color:var(--accent)}
+.hero-cta{display:flex;gap:1.5rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.9s 0.8s forwards}
+.btn-primary{display:inline-block;padding:0.85rem 2rem;background:var(--accent);color:#0a0a0c;font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;font-weight:500;border:none;cursor:pointer;transition:background 0.2s,transform 0.2s}
+.btn-primary:hover{background:var(--accent-2);transform:translateY(-2px)}
+.btn-ghost{display:inline-block;padding:0.85rem 2rem;border:1px solid var(--border-accent);color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;background:none;transition:border-color 0.2s,color 0.2s,transform 0.2s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text);transform:translateY(-2px)}
+.hero-scroll-hint{position:absolute;bottom:2.5rem;left:2.5rem;display:flex;align-items:center;gap:1rem;color:var(--text-faint);opacity:0;animation:fadeIn 1s 1.8s forwards}
+.scroll-line{width:40px;height:1px;background:var(--text-faint);animation:expandLine 2s 2s ease-in-out infinite alternate}
+@keyframes expandLine{from{width:20px}to{width:60px}}
+
+/* SECTIONS */
+.section{padding:8rem 0}
+.section-label{margin-bottom:1.5rem;color:var(--accent);opacity:0.85}
+.section-title{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;line-height:1.05;letter-spacing:-0.02em;margin-bottom:2.5rem}
+.section-title em{font-style:italic;color:var(--accent)}
+
+/* ABOUT */
+.about{background:var(--bg-2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.about-text p{color:var(--text-muted);margin-bottom:1.5rem;font-size:1.05rem}
+.about-text strong{color:var(--text);font-weight:600}
+.about-stats{display:flex;gap:3rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.stat-num{display:block;font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.3rem}
+.stat-label{display:block;font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase}
+.about-visual{display:flex;justify-content:center;align-items:flex-start}
+.about-diagram{text-align:center}
+.rde-diagram{width:280px;height:280px;filter:drop-shadow(0 0 30px rgba(232,116,58,0.18))}
+.wave-rotate{transform-origin:150px 150px;animation:rotateWave 3s linear infinite}
+@keyframes rotateWave{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.diagram-caption{margin-top:1rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em}
+
+/* RESEARCH */
+.research{background:var(--bg)}
+.research-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border)}
+.research-card{background:var(--bg-card);padding:2.5rem;transition:background 0.3s;position:relative;overflow:hidden}
+.research-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--accent);transition:height 0.4s}
+.research-card:hover{background:var(--bg-card-hover)}
+.research-card:hover::before{height:100%}
+.card-number{color:var(--text-faint);font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;margin-bottom:1.5rem;transition:color 0.3s}
+.research-card:hover .card-number{color:var(--accent)}
+.research-card h3{font-size:1.4rem;font-weight:400;margin-bottom:1rem;line-height:1.3}
+.research-card p{color:var(--text-muted);font-size:0.95rem;line-height:1.7;margin-bottom:1.5rem}
+.card-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.7rem;border:1px solid var(--border);color:var(--text-muted)}
+
+/* PUBLICATIONS */
+.publications{background:var(--bg-2)}
+.pub-list{display:flex;flex-direction:column}
+.pub-item{padding:2.5rem 0;border-bottom:1px solid var(--border);position:relative;transition:padding-left 0.3s}
+.pub-item::before{content:'';position:absolute;left:0;top:0;width:0;height:100%;background:none;border-left:2px solid transparent;transition:border-color 0.3s}
+.pub-item:hover{padding-left:1rem}
+.pub-item:hover::before{border-color:var(--accent)}
+.pub-meta{color:var(--accent);margin-bottom:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.08em;opacity:0.85}
+.pub-title{font-size:1.4rem;font-weight:400;margin-bottom:0.5rem}
+.pub-authors,.pub-venue{color:var(--text-muted);font-size:0.95rem}
+.pub-link{display:inline-block;margin-top:0.75rem;color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.08em;transition:letter-spacing 0.3s}
+.pub-link:hover{letter-spacing:0.18em}
+.pub-item--thesis{border-bottom:none}
+.pub-note{margin-top:2rem;color:var(--text-faint);font-family:'JetBrains Mono',monospace;font-size:0.65rem}
+
+/* BLOG TEASER */
+.blog-teaser{background:var(--bg)}
+.blog-teaser-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.blog-teaser-left p{color:var(--text-muted);margin-bottom:2rem}
+.blog-preview-card{display:block;padding:1.5rem;border:1px solid var(--border);text-decoration:none;color:inherit;margin-bottom:1px;background:var(--bg-card);transition:background 0.2s,border-color 0.2s,transform 0.2s;cursor:pointer;position:relative;overflow:hidden}
+.blog-preview-card::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--accent-dim),transparent);opacity:0;transition:opacity 0.3s}
+.blog-preview-card:hover{border-color:var(--border-accent);transform:translateX(6px)}
+.blog-preview-card:hover::after{opacity:1}
+.preview-date{color:var(--text-muted);display:block;margin-bottom:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.08em}
+.blog-preview-card h4{font-size:1.05rem;font-weight:400;margin-bottom:0.75rem;line-height:1.4}
+.preview-read{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.68rem}
+
+/* CONTACT */
+.contact{background:var(--bg-2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.contact-left p{color:var(--text-muted)}
+.contact-links{display:flex;flex-direction:column}
+.contact-item{display:flex;align-items:center;gap:1.5rem;padding:1.5rem;border:1px solid var(--border);margin-bottom:-1px;text-decoration:none;color:inherit;transition:background 0.2s,border-color 0.2s;cursor:pointer}
+.contact-item:hover{background:var(--bg-card-hover);border-color:var(--border-accent)}
+.contact-icon{font-size:1.3rem;color:var(--accent);width:2rem;text-align:center;flex-shrink:0}
+.contact-label{display:block;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.2rem}
+.contact-value{display:block;font-size:0.95rem;color:var(--text)}
+
+/* FOOTER */
+.footer{padding:2rem 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.footer-name{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;cursor:pointer}
+.footer-affil,.footer-copy{color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.06em}
+
+/* ===== BLOG PAGE ===== */
+.blog-header{padding:calc(var(--nav-h) + 5rem) 0 5rem;background:var(--bg)}
+.blog-header-title{font-size:clamp(3.5rem,9vw,8rem);font-weight:300;line-height:0.95;letter-spacing:-0.02em;margin:1rem 0 1.5rem}
+.blog-header-title em{font-style:italic;color:var(--accent)}
+.blog-header-sub{color:var(--text-muted);max-width:500px;font-size:1.1rem}
+.blog-header-line{height:1px;background:var(--border);margin-top:4rem}
+.blog-featured{padding:6rem 0;background:var(--bg-2)}
+.featured-label{color:var(--accent);margin-bottom:2rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em}
+.featured-article{max-width:800px}
+.featured-meta{display:flex;gap:1rem;align-items:center;margin-bottom:1.5rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.08em}
+.featured-meta .tag{color:var(--accent);border-color:var(--border-accent);padding:0.2rem 0.6rem}
+.featured-title{font-size:clamp(1.8rem,4vw,3rem);font-weight:300;margin-bottom:2.5rem;line-height:1.15;letter-spacing:-0.01em}
+.featured-body{color:var(--text-muted)}
+.featured-body .lead{font-size:1.2rem;font-style:italic;color:var(--text);line-height:1.6;margin-bottom:1.5rem;border-left:2px solid var(--accent);padding-left:1.5rem}
+.featured-body p{margin-bottom:1.5rem;font-size:1.05rem}
+.featured-body h3{font-size:1.3rem;font-weight:400;color:var(--text);margin:2rem 0 1rem}
+.post-footer{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.08em}
+.blog-list{padding:6rem 0;background:var(--bg)}
+.blog-list-header{color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:3rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.post-card{padding:3rem 0;border-bottom:1px solid var(--border);max-width:800px}
+.post-card-meta{display:flex;gap:1rem;align-items:center;margin-bottom:1rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.68rem}
+.post-card-meta .tag{border-color:var(--border)}
+.post-card-title{font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:300;margin-bottom:1rem;line-height:1.2;cursor:pointer;transition:color 0.2s}
+.post-card-title:hover{color:var(--accent)}
+.post-card-excerpt{color:var(--text-muted);font-size:1rem;margin-bottom:1rem}
+.post-card-body{color:var(--text-muted);padding-top:1.5rem;display:none}
+.post-card-body.open{display:block}
+.post-card-body p{margin-bottom:1.2rem;font-size:1rem}
+.post-card-body h3{font-size:1.15rem;font-weight:400;color:var(--text);margin:1.5rem 0 0.75rem}
+.post-expand-btn{background:none;border:1px solid var(--border);color:var(--accent);cursor:pointer;padding:0.5rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;transition:border-color 0.2s,background 0.2s;margin-top:0.5rem}
+.post-expand-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.new-post-placeholder{padding:3rem 0;color:var(--text-faint);font-family:'JetBrains Mono',monospace;font-size:0.7rem}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .about-grid,.research-grid,.blog-teaser-grid,.contact-grid{grid-template-columns:1fr;gap:3rem}
+  .about-visual{display:none}
+  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:var(--nav-h);left:0;right:0;background:var(--bg-2);padding:2rem;gap:1.5rem;border-bottom:1px solid var(--border)}
+  .about-stats{gap:1.5rem;flex-wrap:wrap}
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:0.5rem}
+}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo" onclick="showPage('home')">TR</div>
+  <ul class="nav-links" id="navLinks">
+    <li><span class="nav-link" onclick="showPage('home');scrollToSection('about')">About</span></li>
+    <li><span class="nav-link" onclick="showPage('home');scrollToSection('research')">Research</span></li>
+    <li><span class="nav-link" onclick="showPage('home');scrollToSection('publications')">Publications</span></li>
+    <li><span class="nav-link" id="blogNavLink" onclick="showPage('blog')">Blog</span></li>
+    <li><span class="nav-link" onclick="showPage('home');scrollToSection('contact')">Contact</span></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="mono">UCF // Propulsion Research</span>
+        <span class="hero-divider" style="display:inline-block;width:40px;height:1px;background:var(--accent);opacity:0.5"></span>
+        <span class="mono">Orlando, FL</span>
+      </div>
+      <h1 class="hero-name">Taha<br><em>Rezzag</em></h1>
+      <p class="hero-tagline">Advancing the science of<br><span class="accent">rotating detonation engines</span><br>for the next generation of propulsion.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="scrollToSection('research')">Explore Research</button>
+        <button class="btn-ghost" onclick="showPage('blog')">Read the Blog</button>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span class="mono">scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section about" id="about">
+    <div class="container">
+      <div class="section-label"><span class="mono">01 // About</span></div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <h2 class="section-title">Igniting the<br><em>future of flight</em></h2>
+          <p>I'm a propulsion researcher at the <strong>University of Central Florida</strong>, where my work sits at the intersection of combustion physics, thermodynamics, and aerospace engineering. My primary focus is <strong>rotating detonation engines (RDEs)</strong> — a class of pressure-gain combustion devices with the potential to dramatically improve propulsive efficiency.</p>
+          <p>RDEs exploit the thermodynamic advantages of detonation combustion, operating on a wave-based cycle that traverses an annular combustion chamber at supersonic speeds. The physics are extreme and the engineering challenges are profound — which is exactly what drew me here.</p>
+          <div class="about-stats">
+            <div class="stat"><span class="stat-num">RDE</span><span class="stat-label">Primary Focus</span></div>
+            <div class="stat"><span class="stat-num">UCF</span><span class="stat-label">Institution</span></div>
+            <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Curiosity</span></div>
+          </div>
+        </div>
+        <div class="about-visual reveal">
+          <div class="about-diagram">
+            <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="rde-diagram">
+              <circle cx="150" cy="150" r="130" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+              <circle cx="150" cy="150" r="85" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+              <circle cx="150" cy="150" r="130" fill="none" stroke="var(--accent)" stroke-width="0.5" opacity="0.15"/>
+              <g class="wave-rotate">
+                <path d="M 150 22 L 138 55 L 155 50 L 143 80" fill="none" stroke="#ff6a00" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="143" cy="40" r="5" fill="#ff6a00" opacity="0.9"/>
+                <circle cx="143" cy="40" r="10" fill="#ff6a00" opacity="0.2"/>
+                <circle cx="143" cy="40" r="18" fill="#ff6a00" opacity="0.08"/>
+              </g>
+              <text x="150" y="158" text-anchor="middle" fill="var(--text-muted)" font-family="JetBrains Mono" font-size="10" letter-spacing="2">CORE</text>
+              <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)" opacity="0.5"/></marker></defs>
+              <path d="M 205 80 Q 235 48 258 72" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.4" marker-end="url(#arr)"/>
+              <text x="262" y="70" fill="var(--text-muted)" font-family="JetBrains Mono" font-size="8" opacity="0.6">wave</text>
+            </svg>
+            <div class="diagram-caption">Cross-section: Rotating Detonation Engine</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="section research" id="research">
+    <div class="container">
+      <div class="section-label"><span class="mono">02 // Research</span></div>
+      <h2 class="section-title">Areas of<br><em>Investigation</em></h2>
+      <div class="research-grid">
+        <div class="research-card reveal">
+          <div class="card-number">01</div>
+          <h3>Detonation Wave Dynamics</h3>
+          <p>Studying the structure, propagation, and stability of detonation waves in annular combustion chambers under varying equivalence ratios and injection pressures.</p>
+          <div class="card-tags"><span class="tag">Combustion Physics</span><span class="tag">CFD</span><span class="tag">High-speed Imaging</span></div>
+        </div>
+        <div class="research-card reveal">
+          <div class="card-number">02</div>
+          <h3>Pressure-Gain Combustion</h3>
+          <p>Investigating thermodynamic cycle advantages of RDEs versus conventional deflagration-based engines, with focus on Humphrey cycle efficiency gains.</p>
+          <div class="card-tags"><span class="tag">Thermodynamics</span><span class="tag">Cycle Analysis</span><span class="tag">Efficiency</span></div>
+        </div>
+        <div class="research-card reveal">
+          <div class="card-number">03</div>
+          <h3>Injector Design & Mixing</h3>
+          <p>Developing and characterizing fuel-oxidizer injection schemes that ensure proper mixing and feed consistency for sustained detonative combustion.</p>
+          <div class="card-tags"><span class="tag">Fluid Mechanics</span><span class="tag">Injector Design</span><span class="tag">Spray Dynamics</span></div>
+        </div>
+        <div class="research-card reveal">
+          <div class="card-number">04</div>
+          <h3>Diagnostics & Instrumentation</h3>
+          <p>Applying high-frequency pressure transducers, chemiluminescence imaging, and schlieren photography to characterize extreme combustion environments.</p>
+          <div class="card-tags"><span class="tag">Diagnostics</span><span class="tag">Schlieren</span><span class="tag">Data Acquisition</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section class="section publications" id="publications">
+    <div class="container">
+      <div class="section-label"><span class="mono">03 // Publications & Work</span></div>
+      <h2 class="section-title">Selected<br><em>Work</em></h2>
+      <div class="pub-list">
+        <div class="pub-item reveal">
+          <div class="pub-meta">Conference Paper · 2024</div>
+          <h3 class="pub-title">Add your publication title here</h3>
+          <p class="pub-authors">Rezzag, T., et al.</p>
+          <p class="pub-venue">AIAA SciTech Forum / AIAA Propulsion and Energy</p>
+          <a href="#" class="pub-link">→ View Paper</a>
+        </div>
+        <div class="pub-item reveal">
+          <div class="pub-meta">Journal Article · 2024</div>
+          <h3 class="pub-title">Add your journal article title here</h3>
+          <p class="pub-authors">Rezzag, T., et al.</p>
+          <p class="pub-venue">Combustion and Flame / Journal of Propulsion and Power</p>
+          <a href="#" class="pub-link">→ View Paper</a>
+        </div>
+        <div class="pub-item pub-item--thesis reveal">
+          <div class="pub-meta">Thesis / Dissertation</div>
+          <h3 class="pub-title">Add your thesis title here</h3>
+          <p class="pub-authors">University of Central Florida</p>
+          <a href="#" class="pub-link">→ View Document</a>
+        </div>
+      </div>
+      <p class="pub-note">// Update publications above with your real work</p>
+    </div>
+  </section>
+
+  <!-- BLOG TEASER -->
+  <section class="section blog-teaser">
+    <div class="container">
+      <div class="section-label"><span class="mono">04 // From the Blog</span></div>
+      <div class="blog-teaser-grid">
+        <div class="blog-teaser-left reveal">
+          <h2 class="section-title">Thoughts on<br><em>propulsion science</em></h2>
+          <p>A space for deeper dives — into the physics of detonation, the engineering trade-offs in RDE design, and the broader landscape of next-generation propulsion.</p>
+          <button class="btn-primary" onclick="showPage('blog')">Read All Posts</button>
+        </div>
+        <div class="blog-teaser-right">
+          <div class="blog-preview-card reveal" onclick="showPage('blog')">
+            <span class="preview-date">June 2025</span>
+            <h4>What is a Rotating Detonation Engine, and Why Does it Matter?</h4>
+            <span class="preview-read">→ Read</span>
+          </div>
+          <div class="blog-preview-card reveal" onclick="showPage('blog')">
+            <span class="preview-date">May 2025</span>
+            <h4>The Humphrey Cycle: Why Detonation Beats Deflagration</h4>
+            <span class="preview-read">→ Read</span>
+          </div>
+          <div class="blog-preview-card reveal" onclick="showPage('blog')">
+            <span class="preview-date">April 2025</span>
+            <h4>Chasing the Wave: High-Speed Diagnostics in RDE Research</h4>
+            <span class="preview-read">→ Read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="section-label"><span class="mono">05 // Contact</span></div>
+      <div class="contact-grid">
+        <div class="contact-left reveal">
+          <h2 class="section-title">Get in<br><em>Touch</em></h2>
+          <p>Whether you're a fellow researcher, prospective collaborator, or just curious about rotating detonation engines — I'd love to hear from you.</p>
+        </div>
+        <div class="contact-right">
+          <div class="contact-links">
+            <a href="mailto:your.email@ucf.edu" class="contact-item reveal">
+              <span class="contact-icon">✉</span>
+              <div><span class="contact-label">Email</span><span class="contact-value">your.email@ucf.edu</span></div>
+            </a>
+            <a href="https://scholar.google.com" target="_blank" class="contact-item reveal">
+              <span class="contact-icon">◈</span>
+              <div><span class="contact-label">Google Scholar</span><span class="contact-value">View Publications</span></div>
+            </a>
+            <a href="https://linkedin.com" target="_blank" class="contact-item reveal">
+              <span class="contact-icon">◉</span>
+              <div><span class="contact-label">LinkedIn</span><span class="contact-value">Connect</span></div>
+            </a>
+            <a href="https://github.com" target="_blank" class="contact-item reveal">
+              <span class="contact-icon">⬡</span>
+              <div><span class="contact-label">GitHub</span><span class="contact-value">View Code</span></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-name" onclick="showPage('home')">Taha Rezzag</span>
+      <span class="footer-affil">University of Central Florida · Propulsion Research</span>
+      <span class="footer-copy">© 2025</span>
+    </div>
+  </footer>
+
+</div><!-- /page-home -->
+
+<!-- ===== BLOG PAGE ===== -->
+<div class="page" id="page-blog">
+
+  <header class="blog-header">
+    <div class="container">
+      <div class="section-label"><span class="mono">Field Notes</span></div>
+      <h1 class="blog-header-title">The<br><em>Detonation</em><br>Dispatch</h1>
+      <p class="blog-header-sub">Writing on propulsion physics, RDE research, and the strange beauty of supersonic combustion.</p>
+    </div>
+    <div class="blog-header-line"></div>
+  </header>
+
+  <section class="blog-featured">
+    <div class="container">
+      <div class="featured-label">Featured</div>
+      <article class="featured-article reveal">
+        <div class="featured-meta">
+          <span>June 2025</span>
+          <span class="tag">Fundamentals</span>
+        </div>
+        <h2 class="featured-title">What is a Rotating Detonation Engine, and Why Does it Matter?</h2>
+        <div class="featured-body">
+          <p class="lead">Imagine a combustion wave spiraling around the inside of an annular chamber at nearly 2,000 meters per second. That's not a malfunction — that's the entire point.</p>
+          <p>For most of the history of air-breathing propulsion, engineers have relied on <em>deflagration</em> — subsonic, pressure-dropping combustion that we simply call burning. It works. It has powered everything from the Wright Flyer to modern turbofans. But it carries a fundamental thermodynamic cost: combustion in a conventional engine happens at approximately constant pressure, and you leave efficiency on the table.</p>
+          <p>Detonation combustion is different. A detonation wave is a coupled shock-reaction front that propagates supersonically, consuming fuel and releasing energy faster than the surrounding gas can respond. Crucially, it burns at nearly constant <em>volume</em> — which, by the laws of thermodynamics, is more efficient. The Humphrey cycle (detonation-based) extracts more work from a given amount of fuel than the Brayton cycle (deflagration-based) that conventional gas turbines operate on.</p>
+          <h3>The Rotating Architecture</h3>
+          <p>Pulse detonation engines attempted to exploit this advantage in the 1990s and 2000s, using repeated detonation pulses in a tube. The concept worked in principle but suffered from fill-purge inefficiencies and mechanical complexity. The rotating detonation engine takes a different approach: instead of repeated pulses, it establishes one or more detonation waves that continuously orbit an annular combustion chamber.</p>
+          <p>Fresh propellant is injected from one end. The traveling detonation wave consumes it. Combustion products exit from the other end. The result is a nearly continuous process — the wave self-sustains as long as fuel and oxidizer are supplied, governed entirely by chemistry and fluid mechanics.</p>
+          <h3>Why Now?</h3>
+          <p>Several converging factors have made RDE research tractable and urgent. High-frequency pressure transducers can now survive the brutal acoustic environment inside an RDE long enough to produce useful data. CFD codes have matured to the point where detonation wave interactions can be meaningfully simulated. And the aerospace industry is hungry for efficiency gains — in an era of sustainable aviation and contested space access, even a few percentage points of specific impulse improvement matter enormously.</p>
+        </div>
+        <div class="post-footer"><span>Taha Rezzag</span><span>~6 min read</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="blog-list">
+    <div class="container">
+      <div class="blog-list-header">All Posts</div>
+
+      <article class="post-card reveal">
+        <div class="post-card-meta"><span>May 2025</span><span class="tag">Thermodynamics</span></div>
+        <h2 class="post-card-title">The Humphrey Cycle: Why Detonation Beats Deflagration</h2>
+        <p class="post-card-excerpt">A thermodynamic comparison of the Brayton and Humphrey cycles — and what the math tells us about the upper limits of pressure-gain combustion efficiency.</p>
+        <div class="post-card-body" id="body-humphrey">
+          <p>The efficiency advantage of detonation over deflagration isn't hand-waving — it falls directly out of classical thermodynamics.</p>
+          <h3>The Brayton Cycle</h3>
+          <p>Conventional gas turbines operate on the Brayton cycle: isentropic compression, constant-pressure heat addition (combustion), and isentropic expansion. The constant-pressure combustion step is the key constraint — it doesn't exploit the pressure rise that would theoretically be available from more intense heat release.</p>
+          <h3>The Humphrey Cycle</h3>
+          <p>The Humphrey cycle replaces constant-pressure combustion with constant-volume combustion — a better approximation of what happens in a detonation event. Because the gas cannot expand during heat addition, all the energy goes into raising the temperature and pressure simultaneously. The subsequent expansion from a higher pressure state yields more work. Analyses consistently show efficiency gains of 10–25% depending on conditions.</p>
+          <h3>The Catch</h3>
+          <p>The Humphrey cycle is an idealization. Real detonation events don't happen at perfectly constant volume, and the wave-based combustion in an RDE involves a complex mix of processes. Some of the theoretical efficiency advantage is recovered; not all of it. Ongoing research is aimed at understanding exactly how much, and under what conditions.</p>
+        </div>
+        <button class="post-expand-btn" onclick="togglePost('body-humphrey', this)">→ Read more</button>
+      </article>
+
+      <article class="post-card reveal">
+        <div class="post-card-meta"><span>April 2025</span><span class="tag">Diagnostics</span></div>
+        <h2 class="post-card-title">Chasing the Wave: High-Speed Diagnostics in RDE Research</h2>
+        <p class="post-card-excerpt">How researchers use pressure transducers, chemiluminescence imaging, and schlieren photography to study combustion events that last microseconds.</p>
+        <div class="post-card-body" id="body-wave">
+          <p>Measuring something that travels at 1,500–2,000 m/s inside a metal tube, at temperatures exceeding 2,500 K, while withstanding pressures that spike and recover in microseconds — this is the diagnostic challenge at the heart of RDE research.</p>
+          <h3>Pressure Transducers</h3>
+          <p>High-frequency PCB piezoelectric pressure transducers are the workhorses of RDE diagnostics. Mounted flush with the combustor wall, they capture the pressure signature of the detonation wave as it passes. From the time-of-flight between adjacent sensors, we can compute wave speed. From the peak-to-trough pressure ratio, we can infer whether true detonation or a weaker deflagration wave is present.</p>
+          <h3>Chemiluminescence Imaging</h3>
+          <p>When fuel burns, excited radical species (OH*, CH*, C₂*) emit light at characteristic wavelengths. OH* emission at 310 nm marks the reaction zone with high spatial resolution. By imaging through a transparent endwall with a high-speed camera (often 100,000+ fps), we can directly visualize the rotating detonation wave and count the number of waves in the annulus.</p>
+          <h3>Schlieren Photography</h3>
+          <p>Schlieren imaging exploits density gradients in a gas to reveal shock structure. Applied to an optically accessible RDE section, it can reveal the triple point, reflected shocks, and contact surfaces between fresh and burned gas. Getting these diagnostics time-synchronized to microsecond precision in a brutal thermal environment — that's where much of the real experimental engineering happens.</p>
+        </div>
+        <button class="post-expand-btn" onclick="togglePost('body-wave', this)">→ Read more</button>
+      </article>
+
+      <article class="post-card reveal">
+        <div class="post-card-meta"><span>March 2025</span><span class="tag">Theory</span></div>
+        <h2 class="post-card-title">Wave Stability and the Limits of Detonative Operation</h2>
+        <p class="post-card-excerpt">Not all RDE operation is created equal. Understanding the boundaries between stable detonation, unstable multi-wave modes, and deflagration is critical for engine design.</p>
+        <div class="post-card-body" id="body-stability">
+          <p>One of the more counterintuitive aspects of RDE operation is that having more detonation waves isn't always better. The wave count is a function of chamber geometry, propellant injection characteristics, and total mass flow rate — and understanding how to control it is an open research problem.</p>
+          <h3>Single vs. Multi-Wave Modes</h3>
+          <p>RDEs can operate with one, two, three, or more detonation waves traveling simultaneously around the annulus. Each wave configuration has different propagation speeds, pressure gains, and stability characteristics. Some operating conditions produce chaotic multi-wave interactions where waves merge and split unpredictably — fascinating from a physics standpoint, but problematic for an engine.</p>
+          <h3>The DDT Problem</h3>
+          <p>RDEs don't always start in detonation mode — they typically ignite in deflagration and must transition. How reliably and quickly the deflagration-to-detonation transition (DDT) occurs depends on the injector design, local equivalence ratio, and chamber geometry. Research into DDT in annular geometries is an active area with direct implications for engine start reliability.</p>
+          <h3>Extinction Limits</h3>
+          <p>Like any combustion process, rotating detonation has lean and rich extinction limits. Mapping these limits for different propellant combinations and injection pressures is essential for defining the operational envelope of a practical RDE.</p>
+        </div>
+        <button class="post-expand-btn" onclick="togglePost('body-stability', this)">→ Read more</button>
+      </article>
+
+      <div class="new-post-placeholder">// More posts coming — duplicate a post-card block above to add new entries</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-name" onclick="showPage('home')">← Taha Rezzag</span>
+      <span class="footer-affil">University of Central Florida · Propulsion Research</span>
+      <span class="footer-copy">© 2025</span>
+    </div>
+  </footer>
+
+</div><!-- /page-blog -->
+
+<script>
+// ─── Page routing ───────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+  // Update active nav link
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-link--active'));
+  if (name === 'blog') document.getElementById('blogNavLink').classList.add('nav-link--active');
+  initReveal();
+}
+
+function scrollToSection(id) {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+// ─── Nav ────────────────────────────────────────────────
+const nav = document.getElementById('nav');
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+// ─── Canvas animation ───────────────────────────────────
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], angle = 0, animRunning = false;
+
+function resize() {
+  W = canvas.width = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+}
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(rand) {
+    this.x = Math.random() * W;
+    this.y = rand ? Math.random() * H : H + 5;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = -Math.random() * 0.5 - 0.15;
+    this.life = rand ? Math.random() : 1;
+    this.maxLife = 0.5 + Math.random() * 0.5;
+    this.r = Math.random() * 1.5 + 0.3;
+    this.hue = 18 + Math.random() * 28;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    this.life -= 0.003;
+    if (this.life <= 0) this.reset(false);
+  }
+  draw() {
+    const alpha = Math.sin((this.life / this.maxLife) * Math.PI) * 0.45;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${this.hue},90%,55%,${alpha})`;
+    ctx.fill();
+  }
+}
+
+function drawConnections() {
+  const pts = particles.slice(0, 60);
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 110) {
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x, pts[i].y);
+        ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = `rgba(232,116,58,${(1-d/110)*0.07})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function drawRings() {
+  angle += 0.0015;
+  const cx = W * 0.72, cy = H * 0.5;
+  [180, 255, 330].forEach((r, i) => {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle * (i % 2 === 0 ? 1 : -1));
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.setLineDash([3, 18]);
+    ctx.strokeStyle = 'rgba(232,116,58,0.07)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  });
+  // Wave dot
+  const wx = cx + Math.cos(angle * 3) * 217;
+  const wy = cy + Math.sin(angle * 3) * 217;
+  const g = ctx.createRadialGradient(wx,wy,0,wx,wy,20);
+  g.addColorStop(0,'rgba(255,106,0,0.75)');
+  g.addColorStop(1,'rgba(255,106,0,0)');
+  ctx.beginPath(); ctx.arc(wx,wy,20,0,Math.PI*2);
+  ctx.fillStyle = g; ctx.fill();
+  ctx.beginPath(); ctx.arc(wx,wy,4,0,Math.PI*2);
+  ctx.fillStyle = 'rgba(255,185,60,0.95)'; ctx.fill();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, W, H);
+  drawRings();
+  drawConnections();
+  particles.forEach(p => { p.update(); p.draw(); });
+}
+
+function initCanvas() {
+  resize();
+  particles = [];
+  const count = Math.min(Math.floor(W * H / 11000), 80);
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+  if (!animRunning) { animRunning = true; animate(); }
+}
+
+window.addEventListener('resize', () => { resize(); });
+initCanvas();
+
+// ─── Scroll reveal ──────────────────────────────────────
+function initReveal() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.classList.remove('visible');
+  });
+  setTimeout(() => {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.page.active .reveal').forEach(el => obs.observe(el));
+  }, 100);
+}
+initReveal();
+
+// ─── Blog expand ────────────────────────────────────────
+function togglePost(id, btn) {
+  const body = document.getElementById(id);
+  const open = body.classList.toggle('open');
+  btn.textContent = open ? '← Collapse' : '→ Read more';
+}
+</script>
+</body>
+</html>
